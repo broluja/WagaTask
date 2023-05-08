@@ -3,6 +3,7 @@ import sqlite3
 
 HOME_LOCATION = os.getcwd()
 
+
 class DatabaseManager(object):
     """
     Class for interaction with database table 'weather_data'.
@@ -27,9 +28,6 @@ class DatabaseManager(object):
             self.commit()
             print(f'File closed but an exception appeared: {str(exc_type)}')
             return False
-
-    def __str__(self):
-        return f'Weather Manager for {self.conn}'
 
     def __repr__(self):
         return f'{type(self).__name__}()'

@@ -1,7 +1,8 @@
 import requests
 
-from endpoints import CITY_LAT_AND_LONG
 from validators import *
+
+CITY_LAT_AND_LONG = "https://geocoding-api.open-meteo.com/v1/search?name="
 
 
 def print_available_cities(message, results: dict) -> None:
@@ -53,3 +54,10 @@ def get_end_date(start_date: str) -> str | bool:
         print(exc)
         return get_end_date(start_date)
     return date
+
+
+def get_days(start, end):
+    start_date = datetime.date.fromisoformat(start)
+    end_date = datetime.date.fromisoformat(end)
+    delta = end_date - start_date
+    return [start_date + datetime.timedelta(days=i) for i in range(delta.days + 1)]

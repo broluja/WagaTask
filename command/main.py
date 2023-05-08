@@ -1,6 +1,6 @@
 from user_input import get_city, get_start_date, get_end_date
 from exceptions import UserInputException
-from model import database_manager
+from weather_manager import WeatherManager
 
 
 def main():
@@ -20,7 +20,7 @@ def main():
     except UserInputException as exc:
         print(exc)
     else:
-        print(latitude, longitude, timezone, start_date, end_date)
+        WeatherManager().get_day_from_archive(latitude, longitude, [start_date, end_date], timezone)
 
 
 if __name__ == "__main__":
