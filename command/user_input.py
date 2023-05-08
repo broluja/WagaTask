@@ -6,12 +6,23 @@ CITY_LAT_AND_LONG = "https://geocoding-api.open-meteo.com/v1/search?name="
 
 
 def print_available_cities(message, results: dict) -> None:
+    """
+    Prompt user for correct option.
+
+    Return: None.
+    """
     print(message)
     for index, result in enumerate(results, start=1):
-        print(f"Option {index}: {result.get('name', '')}, {result.get('country', '')}, {result.get('admin1', '')}, {result.get('admin2', '')}")
+        print(f"Option {index}: {result.get('name', '')}, {result.get('country', '')}, {result.get('admin1', '')}, "
+              f"{result.get('admin2', '')}")
 
 
 def get_city() -> dict | bool:
+    """
+    Ask for city and get Latitude and Longitude for user's city.
+
+    Return: a city object or False if User decides to quit.
+    """
     cities = input("Enter city: ")
     endpoint = CITY_LAT_AND_LONG + "%20".join(cities.split())
     response = requests.get(endpoint)
@@ -33,6 +44,11 @@ def get_city() -> dict | bool:
 
 
 def get_start_date() -> str | bool:
+    """
+    Get start date from User.
+
+    Return: validated date string or False if User decides to quit.
+    """
     date = input("Enter start date or 'q' for exit: ")
     if date.lower().strip() == 'q':
         return False
@@ -45,6 +61,11 @@ def get_start_date() -> str | bool:
 
 
 def get_end_date(start_date: str) -> str | bool:
+    """
+    Get end date from User.
+
+    Return: validated date string or False if User decides to quit.
+        """
     date = input("Enter end date or 'q' for exit: ")
     if date.lower().strip() == 'q':
         return False
@@ -57,6 +78,11 @@ def get_end_date(start_date: str) -> str | bool:
 
 
 def get_days(start, end):
+    """
+    Get all the days between start and end date.
+
+    Return: list of date objects.
+    """
     start_date = datetime.date.fromisoformat(start)
     end_date = datetime.date.fromisoformat(end)
     delta = end_date - start_date
