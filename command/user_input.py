@@ -1,15 +1,7 @@
-"""Module containing all necessary endpoints."""
 import requests
 
-from validators import validate_date_format, validate_end_date
-from exceptions import *
-
-CITY_LAT_AND_LONG = "https://geocoding-api.open-meteo.com/v1/search?name="
-DAY_FROM_ARCHIVE_WITH_WIND_SPEED = "https://archive-api.open-meteo.com/v1/archive?latitude=52.52&longitude=13.41&start_date={}&end_date={}&hourly=temperature_2m&daily=windspeed_10m_max&timezone={}"
-DAY_FROM_ARCHIVE_WITH_PRECIPITATION_SUM = "https://archive-api.open-meteo.com/v1/archive?latitude=52.52&longitude=13.41&start_date={}&end_date={}&hourly=temperature_2m&daily=precipitation_sum&timezone={}"
-
-FORECASTED_MAX_WIND_SPEED = "https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&start_date={}&end_date={}&daily=windspeed_10m_max&timezone={}"
-FORECASTED_PRECIPITATION = "https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&start_date={}&end_date={}&daily=precipitation_sum&timezone={}}"
+from endpoints import CITY_LAT_AND_LONG
+from validators import *
 
 
 def print_available_cities(message, results: dict) -> None:
@@ -18,7 +10,7 @@ def print_available_cities(message, results: dict) -> None:
         print(f"Option {index}: {result.get('name', '')}, {result.get('country', '')}, {result.get('admin1', '')}, {result.get('admin2', '')}")
 
 
-def get_city() -> dict:
+def get_city() -> dict | bool:
     cities = input("Enter city: ")
     endpoint = CITY_LAT_AND_LONG + "%20".join(cities.split())
     response = requests.get(endpoint)
@@ -36,27 +28,25 @@ def get_city() -> dict:
         return results[int(city) - 1]
     else:
         option = input("Unknown city. Press any key for choosing another city or 'Q' for exit: ")
-        if option.upper() == "Q":
-            return {"latitude": None, "longitude": None}
-        return get_city()
+        return False if option.upper() == "Q" else get_city()
 
 
-def get_start_date():
-    date = input("Enter start date or 'q' for quit: ")
+def get_start_date() -> str | bool:
+    date = input("Enter start date or 'q' for exit: ")
     if date.lower().strip() == 'q':
-        return
+        return False
     try:
-        validate_date_format(date)
+        validate_start_date(date)
     except UserInputException as exc:
         print(exc)
         return get_start_date()
     return date
 
 
-def get_end_date(start_date: str):
-    date = input("Enter end date or 'q' for quit: ")
+def get_end_date(start_date: str) -> str | bool:
+    date = input("Enter end date or 'q' for exit: ")
     if date.lower().strip() == 'q':
-        return
+        return False
     try:
         validate_end_date(start_date, date)
     except UserInputException as exc:

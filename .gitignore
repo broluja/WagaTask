@@ -130,3 +130,5 @@ dmypy.json
 
 # PyCharm, JetBrains
 .idea
+
+command/weather_data.db
