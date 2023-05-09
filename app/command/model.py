@@ -1,18 +1,17 @@
-import os
 import sqlite3
 
-HOME_LOCATION = os.getcwd()
+HOME_LOCATION = "../weather_data.db"
 
 
 class DatabaseManager(object):
     """
-    Class for interaction with database table 'weather_data'.
+    Class for interaction with db table 'weather_data'.
     """
     INSTRUCTION = "CREATE TABLE IF NOT EXISTS weather_data(place_name TEXT UNIQUE, date TEXT, min_temp REAL, " \
                   "max_temp REAL, max_wind_speed REAL, precipitation_sum REAL, is_measured INTEGER)"
 
     def __init__(self):
-        self.conn = sqlite3.connect(f'{HOME_LOCATION}/weather_data.db')
+        self.conn = sqlite3.connect(HOME_LOCATION)
         self.cursor = self.conn.cursor()
         self.cursor.execute(self.INSTRUCTION)
         self.commit()
@@ -38,7 +37,7 @@ class DatabaseManager(object):
 
     def commit(self):
         """
-        Saving and committing into a database.
+        Saving and committing into a db.
         Return: None.
         """
         self.conn.commit()
@@ -46,7 +45,7 @@ class DatabaseManager(object):
 
     def connect(self):
         """
-        Connecting to database.
+        Connecting to db.
         Return: None.
         """
         self.conn = sqlite3.connect('minesweeper.db')

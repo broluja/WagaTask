@@ -1,5 +1,5 @@
-from user_input import get_city, get_start_date, get_end_date
-from exceptions import UserInputException
+from user_input import get_city, get_start_date, get_end_date, get_days
+from app.base import BaseAPPException
 from weather_manager import WeatherManager
 
 
@@ -17,10 +17,11 @@ def main():
         if not end_date:
             return print("Exiting")
         print("Data collected.")
-    except UserInputException as exc:
+    except BaseAPPException as exc:
         print(exc)
     else:
-        WeatherManager().get_day_from_archive(latitude, longitude, [start_date, end_date], timezone)
+        days = get_days(start_date, end_date)
+        WeatherManager().get_data(days, latitude, longitude, timezone)
 
 
 if __name__ == "__main__":

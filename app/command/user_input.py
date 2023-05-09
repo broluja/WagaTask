@@ -54,7 +54,7 @@ def get_start_date() -> str | bool:
         return False
     try:
         validate_start_date(date)
-    except UserInputException as exc:
+    except BaseException as exc:
         print(exc)
         return get_start_date()
     return date
@@ -71,7 +71,7 @@ def get_end_date(start_date: str) -> str | bool:
         return False
     try:
         validate_end_date(start_date, date)
-    except UserInputException as exc:
+    except BaseException as exc:
         print(exc)
         return get_end_date(start_date)
     return date
