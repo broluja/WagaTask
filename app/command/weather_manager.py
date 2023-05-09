@@ -4,7 +4,7 @@ from typing import List
 import requests
 import datetime
 
-from model import DatabaseManager
+from database_manager import DatabaseManager
 
 
 class WeatherManager:
@@ -34,7 +34,7 @@ class WeatherManager:
                           "&end_date={}&daily=temperature_2m_max&timezone={}"
 
     def __init__(self):
-        self.manager = DatabaseManager()
+        self.data_manager = DatabaseManager()
         self.current_day = datetime.date.today()
 
     def process_days(self, days: List[datetime.date]):
@@ -48,14 +48,18 @@ class WeatherManager:
         future_days = [date for date in days if date >= self.current_day]
         return past_days, future_days
 
-    def get_data(self, days, latitude, longitude, timezone):
+    def write_data(self, city_id, days, latitude, longitude, timezone):
         past_days, future_days = self.process_days(days)
         for day in past_days:
             print(f"For day {day} collected following data: ")
-            print(self.get_data_from_archive(latitude, longitude, day, timezone))
+            min_t, max_t, wind_speed, precipitation = self.get_data_from_archive(latitude, longitude, day, timezone)
+            with self.data_manager as manager:
+                manager.write_to_weather_data(city_id, day, min_t, max_t, wind_speed, precipitation, is_measured=True)
         for day in future_days:
             print(f"For day {day} collected following data: ")
-            print(self.get_forecasted_data(latitude, longitude, day, timezone))
+            min_t, max_t, wind_speed, precipitation = self.get_forecasted_data(latitude, longitude, day, timezone)
+            with self.data_manager as manager:
+                manager.write_to_weather_data(city_id, day, min_t, max_t, wind_speed, precipitation)
 
     def get_data_from_archive(self, latitude, longitude, day, timezone):
         wind_speed = requests.get(
@@ -94,3 +98,12 @@ class WeatherManager:
         )
         max_t = max_temp.json()["daily"].get("temperature_2m_max")
         return min_t, max_t, wind_speed, precipitation_data
+
+    def record_data(self, city_object, days):
+        lat, long, timezone = city_object.get("latitude"), city_object.get("longitude"), city_object.get("timezone")
+        with self.data_manager as manager:
+            city_id = manager.get_or_create_place(city_object)
+        self.write_data(city_id, days, lat, long, timezone)
+
+
+weather_manager = WeatherManager()
