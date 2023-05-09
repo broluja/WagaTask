@@ -9,7 +9,6 @@ from app.config import settings as sttg
 
 
 class WeatherManager:
-
     ARCHIVE_DAY_WIND_SPEED = sttg.ARCHIVE_DAY_WIND_SPEED
     ARCHIVE_DAY_PRECIPITATION = sttg.ARCHIVE_DAY_PRECIPITATION
     ARCHIVE_DAY_MIN_TEMP = sttg.ARCHIVE_DAY_MIN_TEMP
@@ -34,51 +33,55 @@ class WeatherManager:
         future_days = [date for date in days if date >= self.current_day]
         return past_days, future_days
 
-    def write_data(self, city_id, days, latitude, longitude, timezone):
+    def write_data(self, city_id, days, latitude, longitude, tz):
         past_days, future_days = self.process_days(days)
-        for day in past_days:
-            min_t, max_t, wind_speed, precipitation = self.get_data_from_archive(latitude, longitude, day, timezone)
-            with self.data_agent as manager:
-                manager.write_to_weather_data(city_id, day, min_t[0], max_t[0], wind_speed[0], precipitation[0], is_measured=1)
-        for day in future_days:
-            min_t, max_t, wind_speed, precipitation = self.get_forecasted_data(latitude, longitude, day, timezone)
-            with self.data_agent as manager:
-                manager.write_to_weather_data(city_id, day, min_t[0], max_t[0], wind_speed[0], precipitation[0])
+        if past_days:
+            min_t, max_t, wind_speed, precipitation = self.get_data_from_archive(latitude, longitude, past_days, tz)
+            for index, day in enumerate(past_days):
+                with self.data_agent as manager:
+                    manager.write_to_weather_data(city_id, day, min_t[index], max_t[index], wind_speed[index],
+                                                  precipitation[index], is_measured=1)
+        if future_days:
+            min_t, max_t, wind_speed, precipitation = self.get_forecasted_data(latitude, longitude, future_days, tz)
+            for index, day in enumerate(future_days):
+                with self.data_agent as manager:
+                    manager.write_to_weather_data(city_id, day, min_t[index], max_t[index], wind_speed[index],
+                                                  precipitation[index])
 
-    def get_data_from_archive(self, latitude, longitude, day, timezone):
+    def get_data_from_archive(self, latitude, longitude, days, timezone):
         wind_speed = requests.get(
-            self.ARCHIVE_DAY_WIND_SPEED.format(latitude, longitude, day, day, timezone)
+            self.ARCHIVE_DAY_WIND_SPEED.format(latitude, longitude, days[0], days[-1], timezone)
         )
         wind_speed = wind_speed.json()["daily"].get("windspeed_10m_max")
         precipitation = requests.get(
-            self.ARCHIVE_DAY_PRECIPITATION.format(latitude, longitude, day, day, timezone)
+            self.ARCHIVE_DAY_PRECIPITATION.format(latitude, longitude, days[0], days[-1], timezone)
         )
         precipitation_data = precipitation.json()["daily"].get("precipitation_sum")
         min_temp = requests.get(
-            self.ARCHIVE_DAY_MIN_TEMP.format(latitude, longitude, day, day, timezone)
+            self.ARCHIVE_DAY_MIN_TEMP.format(latitude, longitude, days[0], days[-1], timezone)
         )
         min_t = min_temp.json()["daily"].get("temperature_2m_min")
         max_temp = requests.get(
-            self.ARCHIVE_DAY_MAX_TEMP.format(latitude, longitude, day, day, timezone)
+            self.ARCHIVE_DAY_MAX_TEMP.format(latitude, longitude, days[0], days[-1], timezone)
         )
         max_t = max_temp.json()["daily"].get("temperature_2m_max")
         return min_t, max_t, wind_speed, precipitation_data
 
-    def get_forecasted_data(self, latitude, longitude, day, timezone):
+    def get_forecasted_data(self, latitude, longitude, days, timezone):
         wind_speed = requests.get(
-            self.FORECASTED_WIND_SPEED.format(latitude, longitude, day, day, timezone)
+            self.FORECASTED_WIND_SPEED.format(latitude, longitude, days[0], days[-1], timezone)
         )
         wind_speed = wind_speed.json()["daily"].get("windspeed_10m_max")
         precipitation = requests.get(
-            self.FORECASTED_PRECIPITATION.format(latitude, longitude, day, day, timezone)
+            self.FORECASTED_PRECIPITATION.format(latitude, longitude, days[0], days[-1], timezone)
         )
         precipitation_data = precipitation.json()["daily"].get("precipitation_sum")
         min_temp = requests.get(
-            self.FORECASTED_MIN_TEMP.format(latitude, longitude, day, day, timezone)
+            self.FORECASTED_MIN_TEMP.format(latitude, longitude, days[0], days[-1], timezone)
         )
         min_t = min_temp.json()["daily"].get("temperature_2m_min")
         max_temp = requests.get(
-            self.FORECASTED_MAX_TEMP.format(latitude, longitude, day, day, timezone)
+            self.FORECASTED_MAX_TEMP.format(latitude, longitude, days[0], days[-1], timezone)
         )
         max_t = max_temp.json()["daily"].get("temperature_2m_max")
         return min_t, max_t, wind_speed, precipitation_data

@@ -15,4 +15,4 @@ class LowerBoundDateException(BaseAPPException):
 
 
 class UpperBoundDateException(BaseAPPException):
-    message_to_user = "End date can not be more than 16 days from today."
+    message_to_user = "End date can not be more than 15 days from today."

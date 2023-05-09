@@ -39,10 +39,6 @@ class DatabaseManager(object):
     def __repr__(self):
         return f'{type(self).__name__}()'
 
-    @staticmethod
-    def get_model(player):
-        pass
-
     def commit(self):
         """
         Saving and committing into a db.
@@ -60,7 +56,8 @@ class DatabaseManager(object):
         self.cursor = self.conn.cursor()
 
     def get_or_create_place(self, city: dict) -> int:
-        name, country, admin1, admin2 = city.get("name"), city.get("country"), city.get("admin1"), city.get("admin2")
+        name, country = city.get("name"), city.get("country")
+        admin1, admin2 = city.get("admin1", "N/A"), city.get("admin2", "N/A")
         city = self.get_place(name, country, admin1, admin2)
         if not city:
             self.cursor.execute('INSERT INTO places (name, country, admin1, admin2) VALUES(?, ?, ?, ?);',
