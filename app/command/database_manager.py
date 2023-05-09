@@ -6,7 +6,7 @@ HOME_LOCATION = "./weather_data.db"
 
 class DatabaseManager(object):
     """
-    Class for interaction with db table 'weather_data'.
+    Class for interaction with a database 'weather_data.db'.
     """
     INSTRUCTION_ONE = "CREATE TABLE IF NOT EXISTS places(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, " \
                       "country TEXT, admin1 TEXT, admin2 TEXT, UNIQUE(name, country, admin1, admin2)) "
@@ -56,6 +56,12 @@ class DatabaseManager(object):
         self.cursor = self.conn.cursor()
 
     def get_or_create_place(self, city: dict) -> int:
+        """
+        Get or create places if not exists.
+
+        Param places: Dictionary containing citi data.
+        Return: ID of created or existing places object.
+        """
         name, country = city.get("name"), city.get("country")
         admin1, admin2 = city.get("admin1", "N/A"), city.get("admin2", "N/A")
         city = self.get_place(name, country, admin1, admin2)

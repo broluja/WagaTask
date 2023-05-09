@@ -16,3 +16,7 @@ class LowerBoundDateException(BaseAPPException):
 
 class UpperBoundDateException(BaseAPPException):
     message_to_user = "End date can not be more than 15 days from today."
+
+
+class UnsuccessfulConnectionError(BaseAPPException):
+    message_to_user = "Connection to source failed. Check your internet connection."

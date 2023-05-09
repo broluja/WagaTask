@@ -3,7 +3,7 @@ import uvicorn
 from fastapi import FastAPI
 
 from app.db.database import engine, Base
-from app.weather.routes import weather_router
+from app.places.routes import weather_router
 
 
 Base.metadata.create_all(bind=engine)

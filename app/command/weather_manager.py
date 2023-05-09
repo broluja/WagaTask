@@ -9,6 +9,8 @@ from app.config import settings as sttg
 
 
 class WeatherManager:
+    """Class for accessing external API."""
+
     ARCHIVE_DAY_WIND_SPEED = sttg.ARCHIVE_DAY_WIND_SPEED
     ARCHIVE_DAY_PRECIPITATION = sttg.ARCHIVE_DAY_PRECIPITATION
     ARCHIVE_DAY_MIN_TEMP = sttg.ARCHIVE_DAY_MIN_TEMP

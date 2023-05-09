@@ -1,5 +1,5 @@
 import datetime
-from exceptions import *
+from app.command.exceptions import *
 
 LOWER_BOUND_DATE = "2022-06-08"
 UPPER_BOUND_DATE = datetime.date.today() + datetime.timedelta(15)

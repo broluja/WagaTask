@@ -1,0 +1,18 @@
+"""Place Controller module"""
+from fastapi import HTTPException
+
+from app.base import BaseAPPException
+from app.places.service import PlaceServices
+
+
+class PlaceController:
+    """Controller for Place routes"""
+    @staticmethod
+    def get_place_data_differences(name):
+
+        try:
+            return PlaceServices.get_place_data_differences(name)
+        except BaseAPPException as exc:
+            raise HTTPException(status_code=404, detail=exc.message_to_user) from exc
+        except Exception as exc:
+            raise HTTPException(status_code=500, detail=str(exc)) from exc

@@ -1,8 +1,13 @@
 import requests
+from requests.exceptions import ConnectionError
+import datetime
 
-from validators import *
+from app.base import BaseAPPException
+from app.command.exceptions import UnsuccessfulConnectionError
+from app.validators.validators import validate_start_date, validate_end_date
+from app.config import settings as sttg
 
-CITY_LAT_AND_LONG = "https://geocoding-api.open-meteo.com/v1/search?name="
+CITY_LAT_AND_LONG = sttg.CITY_LAT_AND_LONG
 
 
 def print_available_cities(message, results: dict) -> None:
@@ -20,27 +25,30 @@ def print_available_cities(message, results: dict) -> None:
 
 def get_city() -> dict | bool:
     """
-    Ask for city and get Latitude and Longitude for user's city.
+    Ask for places and get Latitude and Longitude for user's places.
 
-    Return: a city object or False if User decides to quit.
+    Return: a places object or False if User decides to quit.
     """
-    cities = input("Enter city: ")
-    endpoint = CITY_LAT_AND_LONG + "%20".join(cities.split())
-    response = requests.get(endpoint)
+    cities = input("Enter places: ")
+    endpoint = CITY_LAT_AND_LONG + "%20".join(cities.strip().split())
+    try:
+        response = requests.get(endpoint)
+    except ConnectionError as exc:
+        raise UnsuccessfulConnectionError from exc
     results = response.json().get("results", None)
     if results:
-        print_available_cities("Select desired city from options below:", results)
-        city = input("Enter option or b for choosing different city: ")
+        print_available_cities("Select desired places from options below:", results)
+        city = input("Enter option or b for choosing different places: ")
         if city.lower().strip() == "b":
             return get_city()
         while city.strip() not in (str(i) for i in range(1, len(results) + 1)):
             print_available_cities("Invalid option. Available options are:", results)
-            city = input("Enter option or b for choosing different city: ")
+            city = input("Enter option or b for choosing different places: ")
             if city.lower().strip() == "b":
                 return get_city()
         return results[int(city) - 1]
     else:
-        option = input("Unknown city. Press any key for choosing another city or 'Q' for exit: ")
+        option = input("Unknown places. Press any key for choosing another places or 'Q' for exit: ")
         return False if option.upper() == "Q" else get_city()
 
 
@@ -55,7 +63,7 @@ def get_start_date() -> str | bool:
         return False
     try:
         validate_start_date(date)
-    except BaseException as exc:
+    except BaseAPPException as exc:
         print(exc)
         return get_start_date()
     return date
@@ -72,7 +80,7 @@ def get_end_date(start_date: str) -> str | bool:
         return False
     try:
         validate_end_date(start_date, date)
-    except BaseException as exc:
+    except BaseAPPException as exc:
         print(exc)
         return get_end_date(start_date)
     return date
