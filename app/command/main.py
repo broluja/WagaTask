@@ -10,14 +10,14 @@ def main():
             return print("Exiting...")
         start_date = get_start_date()
         if not start_date:
-            return print("Exiting")
+            return print("Exiting...")
         else:
             end_date = get_end_date(start_date)
         if not end_date:
-            return print("Exiting")
+            return print("Exiting...")
         print("Data collected.")
     except BaseAPPException as exc:
-        print(exc)
+        print(exc, "", sep="\n")
     else:
         days = get_days(start_date, end_date)
         weather_manager.record_data(city_object, days)

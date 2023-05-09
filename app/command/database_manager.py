@@ -1,7 +1,7 @@
 import sqlite3
 from sqlite3 import IntegrityError
 
-HOME_LOCATION = "../weather_data.db"
+HOME_LOCATION = "./weather_data.db"
 
 
 class DatabaseManager(object):
@@ -74,12 +74,12 @@ class DatabaseManager(object):
             (name, country, admin1, admin2)).fetchone()
         return city
 
-    def write_to_weather_data(self, city_id, day, min_t, max_t, wind_speed, precipitation, is_measured=False) -> None:
+    def write_to_weather_data(self, city_id, day, min_t, max_t, wind_speed, precipitation, is_measured=0) -> None:
         try:
             self.cursor.execute(
                 """INSERT INTO weather_data (place_id, date, min_temp, max_temp, max_wind_speed, 
-                precipitation, is_measured) VALUES(?, ?, ?, ?, ?, ?, ?);""",
+                precipitation_sum, is_measured) VALUES(?, ?, ?, ?, ?, ?, ?);""",
                 (city_id, day, min_t, max_t, wind_speed, precipitation, is_measured)
             )
         except IntegrityError as exc:
-            print("Already added this data.")
+            print(f"Data for {day} already exists.")

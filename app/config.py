@@ -4,27 +4,18 @@ from pydantic import BaseSettings
 
 class Settings(BaseSettings):
     """Class for storing settings data."""
-    DB_HOST: str
-    DB_HOSTNAME: str
-    DB_PORT: int
-    DB_USER: str
-    DB_PASSWORD: str
-    DB_NAME: str
-    DB_NAME_TEST: str
-    USER_SECRET: str
-    ALGORYTHM: str
-    TOKEN_DURATION_SECONDS: int
-    MAIL_USERNAME: str
-    MAIL_PASSWORD: str
-    MAIL_PORT: int
-    MAIL_SERVER: str
-    MAIL_FROM: str
-    PER_PAGE: int
-    MAX_NUMBER_SUBUSERS: int
+    ARCHIVE_DAY_WIND_SPEED: str
+    ARCHIVE_DAY_PRECIPITATION: str
+    ARCHIVE_DAY_MIN_TEMP: str
+    ARCHIVE_DAY_MAX_TEMP: str
+    FORECASTED_WIND_SPEED: str
+    FORECASTED_PRECIPITATION: str
+    FORECASTED_MIN_TEMP: str
+    FORECASTED_MAX_TEMP: str
 
     class Config:
         """Configuration Class"""
-        env_file = './.env'
+        env_file = '../.env'
 
 
 settings = Settings()

@@ -11,10 +11,11 @@ def print_available_cities(message, results: dict) -> None:
 
     Return: None.
     """
-    print(message)
+    print(message, "-" * 50, sep="\n")
     for index, result in enumerate(results, start=1):
         print(f"Option {index}: {result.get('name', '')}, {result.get('country', '')}, {result.get('admin1', '')}, "
               f"{result.get('admin2', '')}")
+    print("-" * 50)
 
 
 def get_city() -> dict | bool:

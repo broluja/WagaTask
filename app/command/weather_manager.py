@@ -5,36 +5,22 @@ import requests
 import datetime
 
 from database_manager import DatabaseManager
+from app.config import settings as sttg
 
 
 class WeatherManager:
 
-    ARCHIVE_DAY_WIND_SPEED = "https://archive-api.open-meteo.com/v1/archive?latitude={}&longitude={}&start_date={}" \
-                             "&end_date={}&hourly=temperature_2m&daily=windspeed_10m_max&timezone={}"
-
-    ARCHIVE_DAY_PRECIPITATION = "https://archive-api.open-meteo.com/v1/archive?latitude={}&longitude={}&" \
-                                "start_date={}&end_date={}&hourly=temperature_2m&daily=precipitation_sum&timezone={}"
-
-    ARCHIVE_DAY_MIN_TEMP = "https://archive-api.open-meteo.com/v1/archive?latitude={}&longitude={}&" \
-                           "start_date={}&end_date={}&hourly=temperature_2m&daily=temperature_2m_min&timezone={}"
-
-    ARCHIVE_DAY_MAX_TEMP = "https://archive-api.open-meteo.com/v1/archive?latitude={}&longitude={}&" \
-                           "start_date={}&end_date={}&hourly=temperature_2m&daily=temperature_2m_max&timezone={}"
-
-    FORECASTED_WIND_SPEED = "https://api.open-meteo.com/v1/forecast?latitude={}&longitude={}&start_date={}" \
-                            "&end_date={}&daily=windspeed_10m_max&timezone={}"
-
-    FORECASTED_PRECIPITATION = "https://api.open-meteo.com/v1/forecast?latitude={}&longitude={}&start_date={}" \
-                               "&end_date={}&daily=precipitation_sum&timezone={}"
-
-    FORECASTED_MIN_TEMP = "https://api.open-meteo.com/v1/forecast?latitude={}&longitude={}&start_date={}" \
-                          "&end_date={}&daily=temperature_2m_min&timezone={}"
-
-    FORECASTED_MAX_TEMP = "https://api.open-meteo.com/v1/forecast?latitude={}&longitude={}&start_date={}" \
-                          "&end_date={}&daily=temperature_2m_max&timezone={}"
+    ARCHIVE_DAY_WIND_SPEED = sttg.ARCHIVE_DAY_WIND_SPEED
+    ARCHIVE_DAY_PRECIPITATION = sttg.ARCHIVE_DAY_PRECIPITATION
+    ARCHIVE_DAY_MIN_TEMP = sttg.ARCHIVE_DAY_MIN_TEMP
+    ARCHIVE_DAY_MAX_TEMP = sttg.ARCHIVE_DAY_MAX_TEMP
+    FORECASTED_WIND_SPEED = sttg.FORECASTED_WIND_SPEED
+    FORECASTED_PRECIPITATION = sttg.FORECASTED_PRECIPITATION
+    FORECASTED_MIN_TEMP = sttg.FORECASTED_MIN_TEMP
+    FORECASTED_MAX_TEMP = sttg.FORECASTED_MAX_TEMP
 
     def __init__(self):
-        self.data_manager = DatabaseManager()
+        self.data_agent = DatabaseManager()
         self.current_day = datetime.date.today()
 
     def process_days(self, days: List[datetime.date]):
@@ -51,15 +37,13 @@ class WeatherManager:
     def write_data(self, city_id, days, latitude, longitude, timezone):
         past_days, future_days = self.process_days(days)
         for day in past_days:
-            print(f"For day {day} collected following data: ")
             min_t, max_t, wind_speed, precipitation = self.get_data_from_archive(latitude, longitude, day, timezone)
-            with self.data_manager as manager:
-                manager.write_to_weather_data(city_id, day, min_t, max_t, wind_speed, precipitation, is_measured=True)
+            with self.data_agent as manager:
+                manager.write_to_weather_data(city_id, day, min_t[0], max_t[0], wind_speed[0], precipitation[0], is_measured=1)
         for day in future_days:
-            print(f"For day {day} collected following data: ")
             min_t, max_t, wind_speed, precipitation = self.get_forecasted_data(latitude, longitude, day, timezone)
-            with self.data_manager as manager:
-                manager.write_to_weather_data(city_id, day, min_t, max_t, wind_speed, precipitation)
+            with self.data_agent as manager:
+                manager.write_to_weather_data(city_id, day, min_t[0], max_t[0], wind_speed[0], precipitation[0])
 
     def get_data_from_archive(self, latitude, longitude, day, timezone):
         wind_speed = requests.get(
@@ -101,9 +85,10 @@ class WeatherManager:
 
     def record_data(self, city_object, days):
         lat, long, timezone = city_object.get("latitude"), city_object.get("longitude"), city_object.get("timezone")
-        with self.data_manager as manager:
+        with self.data_agent as manager:
             city_id = manager.get_or_create_place(city_object)
         self.write_data(city_id, days, lat, long, timezone)
+        print("Data recorded.")
 
 
 weather_manager = WeatherManager()
