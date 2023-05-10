@@ -13,6 +13,6 @@ def get_all_data():
     return WeatherDataController.get_all_data()
 
 
-@weather_data_router.get("/place", summary="Get weather data by place name", response_model=List[WeatherDataSchemaOut])
+@weather_data_router.get("/place", summary="Get weather data by place name")
 def get_by_place_id(place_id: int):
     return WeatherDataController.get_by_place_id(place_id)

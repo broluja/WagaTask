@@ -4,6 +4,8 @@ from pydantic import BaseSettings
 
 class Settings(BaseSettings):
     """Class for storing settings data."""
+    DB_LOCATION: str
+
     CITY_LAT_AND_LONG: str
     ARCHIVE_DAY_WIND_SPEED: str
     ARCHIVE_DAY_PRECIPITATION: str

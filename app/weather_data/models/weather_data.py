@@ -1,5 +1,5 @@
 """Weather Data Model module"""
-from sqlalchemy import Column, String, Integer, UniqueConstraint, Float
+from sqlalchemy import Column, String, Integer, UniqueConstraint, Float, ForeignKey
 
 from app.db import Base
 
@@ -10,7 +10,7 @@ class WeatherData(Base):
     __table_args__ = (UniqueConstraint("place_id", "date", "is_measured", name="weather_data_constraint"),)
 
     id = Column(Integer(), primary_key=True)
-    place_id = Column(Integer())
+    place_id = Column(Integer(), ForeignKey('places.id'))
     date = Column(String(15))
     min_temp = Column(Float())
     max_temp = Column(Float())

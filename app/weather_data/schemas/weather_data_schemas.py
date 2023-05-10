@@ -1,5 +1,6 @@
 """Weather Data Schemas module"""
 from pydantic import BaseModel
+from app.places.schemas import PlaceSchemaOut
 
 
 class WeatherDataSchema(BaseModel):
@@ -23,4 +24,20 @@ class WeatherDataSchemaOut(BaseModel):
     class Config:
         """Configuration Class"""
         orm_mode = True
-        
+
+
+class WeatherDataDifferencesSchema(BaseModel):
+    """Weather differences schema."""
+
+    place: PlaceSchemaOut
+
+    date: str
+    min_temp_differences: float | None
+    max_temp_differences: float | None
+    max_wind_speed_differences: float | None
+    precipitation_sum_differences: float | None
+
+    class Config:
+        """Configuration Class"""
+        orm_mode = True
+

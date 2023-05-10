@@ -1,7 +1,8 @@
 import sqlite3
 from sqlite3 import IntegrityError
+from app.config import settings as sttg
 
-HOME_LOCATION = "./weather_data.db"
+DB_LOCATION = sttg.DB_LOCATION
 
 
 class DatabaseManager(object):
@@ -18,7 +19,7 @@ class DatabaseManager(object):
                       "UNIQUE(place_id, date, is_measured))"
 
     def __init__(self):
-        self.conn = sqlite3.connect(HOME_LOCATION)
+        self.conn = sqlite3.connect(DB_LOCATION)
         self.cursor = self.conn.cursor()
         self.cursor.execute(self.INSTRUCTION_ONE)
         self.cursor.execute(self.INSTRUCTION_TWO)
@@ -52,7 +53,7 @@ class DatabaseManager(object):
         Connecting to db.
         Return: None.
         """
-        self.conn = sqlite3.connect(HOME_LOCATION)
+        self.conn = sqlite3.connect(DB_LOCATION)
         self.cursor = self.conn.cursor()
 
     def get_or_create_place(self, city: dict) -> int:
@@ -73,7 +74,7 @@ class DatabaseManager(object):
 
     def get_place(self, name, country, admin1, admin2):
         city = self.cursor.execute(
-            "SELECT id, name, country, admin1, admin2 FROM places WHERE name=? AND country=? AND admin1=? AND admin2=?;",
+            "SELECT id, name, country, admin1, admin2 FROM places WHERE name=? AND country=? AND admin1=? AND admin2=?",
             (name, country, admin1, admin2)).fetchone()
         return city
 

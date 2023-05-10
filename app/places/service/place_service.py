@@ -1,7 +1,14 @@
 """Place Service module"""
+from itertools import chain
+from collections import Counter
+
 from app.db import SessionLocal
 from app.places.models import Place
 from app.places.repositories import PlaceRepository
+from app.weather_data.repositories import WeatherDataRepository
+from app.weather_data.models import WeatherData
+from app.weather_data.utils import get_data_differences
+from app.weather_data.schemas import WeatherDataDifferencesSchema
 
 
 class PlaceServices:
@@ -10,8 +17,26 @@ class PlaceServices:
     def get_place_data_differences(name):
         try:
             with SessionLocal() as db:
-                repository = PlaceRepository(db, Place)
-                places = repository.read_place_by_name(name)
-                return places
+                place_repository = PlaceRepository(db, Place)
+                places = place_repository.read_place_by_name(name)
+                weather_data_repository = WeatherDataRepository(db, WeatherData)
+                schemas_to_return = []
+                for place in places:
+                    dates = weather_data_repository.read_all_dates_for_place(place_id=place.id)
+                    flatten_list = list(chain(*dates))
+                    date_count = Counter(flatten_list)
+                    for date in date_count:
+                        if date_count[date] == 2:
+                            objects = weather_data_repository.read_data_by_place_id_and_date(place.id, date)
+                            min_temp, max_temp, wind_speed, precipitation = get_data_differences(objects[0], objects[1])
+                            schema = WeatherDataDifferencesSchema(
+                                place=place,
+                                date=date,
+                                min_temp_differences=min_temp,
+                                max_temp_differences=max_temp,
+                                max_wind_speed_differences=wind_speed,
+                                precipitation_sum_differences=precipitation)
+                            schemas_to_return.append(schema)
+                return schemas_to_return
         except Exception as exc:
             raise exc

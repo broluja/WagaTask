@@ -2,12 +2,12 @@
 from typing import List
 from fastapi import APIRouter
 
-from app.places.schemas import PlaceSchemaOut
+from app.weather_data.schemas import WeatherDataDifferencesSchema
 from app.places.controller import PlaceController
 
 weather_router = APIRouter(prefix="/api/places", tags=["Places"])
 
 
-@weather_router.get("/", summary="City input", response_model=List[PlaceSchemaOut])
+@weather_router.get("/", summary="City input", response_model=List[WeatherDataDifferencesSchema])
 def get_city_data_differences(place: str):
     return PlaceController.get_place_data_differences(place.title())

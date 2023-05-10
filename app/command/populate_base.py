@@ -1,6 +1,11 @@
+import sys
+import os
+
 from user_input import get_city, get_start_date, get_end_date, get_days
 from app.base import BaseAPPException
 from weather_manager import weather_manager
+
+sys.path.append(os.getcwd())
 
 
 def main():

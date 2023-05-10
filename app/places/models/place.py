@@ -1,5 +1,6 @@
 """Place Model module"""
 from sqlalchemy import Column, String, Integer, UniqueConstraint
+from sqlalchemy.orm import relationship
 
 from app.db import Base
 
@@ -14,6 +15,8 @@ class Place(Base):
     country = Column(String(100))
     admin1 = Column(String(100))
     admin2 = Column(String(100))
+
+    data = relationship("WeatherData", lazy='subquery')
 
     def __init__(self, name: str, country: str, admin1: str, admin2: str):
         self.name = name
