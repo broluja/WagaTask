@@ -1,4 +1,4 @@
-"""Weather routes module"""
+"""Place routes module"""
 from typing import List
 from fastapi import APIRouter
 

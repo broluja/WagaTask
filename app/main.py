@@ -4,6 +4,7 @@ from fastapi import FastAPI
 
 from app.db.database import engine, Base
 from app.places.routes import weather_router
+from app.weather_data.routes import weather_data_router
 
 
 Base.metadata.create_all(bind=engine)
@@ -16,6 +17,7 @@ def init_app():
     """
     my_app = FastAPI()
     my_app.include_router(weather_router)
+    my_app.include_router(weather_data_router)
 
     return my_app
 

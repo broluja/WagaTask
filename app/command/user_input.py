@@ -4,7 +4,7 @@ import datetime
 
 from app.base import BaseAPPException
 from app.command.exceptions import UnsuccessfulConnectionError
-from app.validators.validators import validate_start_date, validate_end_date
+from validators import validate_start_date, validate_end_date
 from app.config import settings as sttg
 
 CITY_LAT_AND_LONG = sttg.CITY_LAT_AND_LONG

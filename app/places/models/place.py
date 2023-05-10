@@ -1,6 +1,4 @@
 """Place Model module"""
-from datetime import date
-
 from sqlalchemy import Column, String, Integer, UniqueConstraint
 
 from app.db import Base
