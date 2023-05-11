@@ -2,10 +2,9 @@ import requests
 from requests.exceptions import ConnectionError
 import datetime
 
-from app.base import BaseAPPException
-from app.command.exceptions import UnsuccessfulConnectionError
+from exceptions import UserInputException, UnsuccessfulConnectionError
 from validators import validate_start_date, validate_end_date
-from app.config import settings as sttg
+from config import settings as sttg
 
 CITY_LAT_AND_LONG = sttg.CITY_LAT_AND_LONG
 
@@ -63,7 +62,7 @@ def get_start_date() -> str | bool:
         return False
     try:
         validate_start_date(date)
-    except BaseAPPException as exc:
+    except UserInputException as exc:
         print(exc)
         return get_start_date()
     return date
@@ -80,7 +79,7 @@ def get_end_date(start_date: str) -> str | bool:
         return False
     try:
         validate_end_date(start_date, date)
-    except BaseAPPException as exc:
+    except UserInputException as exc:
         print(exc)
         return get_end_date(start_date)
     return date

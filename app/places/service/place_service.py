@@ -3,6 +3,7 @@ from itertools import chain
 from collections import Counter
 
 from app.db import SessionLocal
+from app.places.exceptions import NoCityDifferencesException
 from app.places.models import Place
 from app.places.repositories import PlaceRepository
 from app.weather_data.repositories import WeatherDataRepository
@@ -37,6 +38,8 @@ class PlaceServices:
                                 max_wind_speed_differences=wind_speed,
                                 precipitation_sum_differences=precipitation)
                             schemas_to_return.append(schema)
+                if not schemas_to_return:
+                    raise NoCityDifferencesException
                 return schemas_to_return
         except Exception as exc:
             raise exc

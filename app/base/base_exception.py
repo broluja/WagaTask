@@ -2,7 +2,7 @@
 
 
 class BaseAPPException(Exception):
-    message_to_user = "Something went wrong. Please try again later."
+    message_to_user = "Something went wrong."
     status_code = 400
 
     def __init__(self, *args):

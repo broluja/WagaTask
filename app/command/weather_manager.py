@@ -5,7 +5,7 @@ import requests
 import datetime
 
 from database_manager import DatabaseManager
-from app.config import settings as sttg
+from config import settings as sttg
 
 
 class WeatherManager:

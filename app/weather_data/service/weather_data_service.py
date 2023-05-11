@@ -20,6 +20,6 @@ class WeatherDataService:
         try:
             with SessionLocal() as db:
                 repository = WeatherDataRepository(db, WeatherData)
-                return repository.read_all_dates_for_place(place_id)
+                return repository.read_data_by_place_id(place_id)
         except Exception as exc:
             raise exc

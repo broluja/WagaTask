@@ -1,5 +1,10 @@
 """Configuration module"""
 from pydantic import BaseSettings
+import os
+
+
+os.chdir("../..")
+env_file = os.getcwd() + '\\.env'
 
 
 class Settings(BaseSettings):
@@ -18,7 +23,7 @@ class Settings(BaseSettings):
 
     class Config:
         """Configuration Class"""
-        env_file = './.env'
+        env_file = env_file
 
 
 settings = Settings()

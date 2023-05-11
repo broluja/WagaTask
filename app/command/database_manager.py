@@ -1,6 +1,6 @@
 import sqlite3
 from sqlite3 import IntegrityError
-from app.config import settings as sttg
+from config import settings as sttg
 
 DB_LOCATION = sttg.DB_LOCATION
 

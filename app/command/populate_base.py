@@ -1,11 +1,6 @@
-import sys
-import os
-
 from user_input import get_city, get_start_date, get_end_date, get_days
-from app.base import BaseAPPException
+from exceptions import UserInputException
 from weather_manager import weather_manager
-
-sys.path.append(os.getcwd())
 
 
 def main():
@@ -21,7 +16,7 @@ def main():
         if not end_date:
             return print("Exiting...")
         print("Data collected.")
-    except BaseAPPException as exc:
+    except UserInputException as exc:
         print(exc, "", sep="\n")
     else:
         days = get_days(start_date, end_date)

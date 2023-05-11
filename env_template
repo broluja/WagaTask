@@ -1,0 +1,23 @@
+
+# Endpoints
+CITY_LAT_AND_LONG="https://geocoding-api.open-meteo.com/v1/search?name="
+
+ARCHIVE_DAY_WIND_SPEED="https://archive-api.open-meteo.com/v1/archive?latitude={}&longitude={}&start_date={}&end_date={}&hourly=temperature_2m&daily=windspeed_10m_max&timezone={}"
+
+ARCHIVE_DAY_PRECIPITATION="https://archive-api.open-meteo.com/v1/archive?latitude={}&longitude={}&start_date={}&end_date={}&hourly=temperature_2m&daily=precipitation_sum&timezone={}"
+
+ARCHIVE_DAY_MIN_TEMP="https://archive-api.open-meteo.com/v1/archive?latitude={}&longitude={}&start_date={}&end_date={}&hourly=temperature_2m&daily=temperature_2m_min&timezone={}"
+
+ARCHIVE_DAY_MAX_TEMP = "https://archive-api.open-meteo.com/v1/archive?latitude={}&longitude={}&start_date={}&end_date={}&hourly=temperature_2m&daily=temperature_2m_max&timezone={}"
+
+FORECASTED_WIND_SPEED = "https://api.open-meteo.com/v1/forecast?latitude={}&longitude={}&start_date={}&end_date={}&daily=windspeed_10m_max&timezone={}"
+
+FORECASTED_PRECIPITATION = "https://api.open-meteo.com/v1/forecast?latitude={}&longitude={}&start_date={}&end_date={}&daily=precipitation_sum&timezone={}"
+
+FORECASTED_MIN_TEMP = "https://api.open-meteo.com/v1/forecast?latitude={}&longitude={}&start_date={}&end_date={}&daily=temperature_2m_min&timezone={}"
+
+FORECASTED_MAX_TEMP = "https://api.open-meteo.com/v1/forecast?latitude={}&longitude={}&start_date={}&end_date={}&daily=temperature_2m_max&timezone={}"
+
+
+# Database settings
+DB_LOCATION="./database_name.db"
