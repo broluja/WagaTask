@@ -9,17 +9,32 @@ from config import settings as sttg
 CITY_LAT_AND_LONG = sttg.CITY_LAT_AND_LONG
 
 
+def mprint(*args, delimiter="-", end="\n", sep="\n") -> None:
+    """
+    Custom print function with two limit lines
+
+    Param args: Message(s) for printing.
+    Param delimiter: delimiter used for limit lines
+    Param end: string appended after the last value, default a newline.
+    Param sep: string inserted between values, default a new line.
+    Return: None.
+    """
+    if len(args) == 1 and "\n" not in repr(args[0]):
+        print(delimiter * 80, f"{args[0]:^80}", delimiter * 80, sep=sep, end=end)
+    else:
+        print(delimiter * 80, *args, delimiter * 80, sep=sep, end=end)
+
+
 def print_available_cities(message, results: dict) -> None:
     """
     Prompt user for correct option.
 
     Return: None.
     """
-    print(message, "-" * 50, sep="\n")
+    mprint(message)
     for index, result in enumerate(results, start=1):
         print(f"Option {index}: {result.get('name', '')}, {result.get('country', '')}, {result.get('admin1', '')}, "
               f"{result.get('admin2', '')}")
-    print("-" * 50)
 
 
 def get_city() -> dict | bool:
@@ -28,7 +43,7 @@ def get_city() -> dict | bool:
 
     Return: a places object or False if User decides to quit.
     """
-    cities = input("Enter places: ")
+    cities = input("Enter place: ")
     endpoint = CITY_LAT_AND_LONG + "%20".join(cities.strip().split())
     try:
         response = requests.get(endpoint)
@@ -36,7 +51,7 @@ def get_city() -> dict | bool:
         raise UnsuccessfulConnectionError from exc
     results = response.json().get("results", None)
     if results:
-        print_available_cities("Select desired places from options below:", results)
+        print_available_cities("Select place from options below:", results)
         city = input("Enter option or b for choosing different places: ")
         if city.lower().strip() == "b":
             return get_city()
@@ -57,13 +72,13 @@ def get_start_date() -> str | bool:
 
     Return: validated date string or False if User decides to quit.
     """
-    date = input("Enter start date or 'q' for exit: ")
+    date = input("Enter START date or 'q' for exit: ")
     if date.lower().strip() == 'q':
         return False
     try:
         validate_start_date(date)
     except UserInputException as exc:
-        print(exc)
+        mprint(str(exc))
         return get_start_date()
     return date
 
@@ -74,13 +89,13 @@ def get_end_date(start_date: str) -> str | bool:
 
     Return: validated date string or False if User decides to quit.
         """
-    date = input("Enter end date or 'q' for exit: ")
+    date = input("Enter END date or 'q' for exit: ")
     if date.lower().strip() == 'q':
         return False
     try:
         validate_end_date(start_date, date)
     except UserInputException as exc:
-        print(exc)
+        mprint(str(exc))
         return get_end_date(start_date)
     return date
 
