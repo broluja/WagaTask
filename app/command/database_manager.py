@@ -1,6 +1,7 @@
 import sqlite3
 from sqlite3 import IntegrityError
 from config import settings as sttg
+from user_input import mprint
 
 DB_LOCATION = sttg.DB_LOCATION
 
@@ -34,7 +35,7 @@ class DatabaseManager(object):
             self.commit()
         else:
             self.commit()
-            print(f'File closed but an exception appeared: {str(exc_type)}')
+            mprint(f'File closed but an exception appeared: {str(exc_type)}')
             return False
 
     def __repr__(self):
@@ -72,13 +73,43 @@ class DatabaseManager(object):
             return self.cursor.lastrowid
         return city[0]
 
-    def get_place(self, name, country, admin1, admin2):
+    def get_place(self, name: str, country: str, admin1: str, admin2: str) -> dict:
+        """
+        Function retrieves place from database by name, country, admin1 and admin2.
+
+        Param name: name of the place.
+        Param country: country of place.
+        Param admin1: municipality.
+        Param admin2: municipality.
+        Return: Place object.
+        """
         city = self.cursor.execute(
             "SELECT id, name, country, admin1, admin2 FROM places WHERE name=? AND country=? AND admin1=? AND admin2=?",
             (name, country, admin1, admin2)).fetchone()
         return city
 
-    def write_to_weather_data(self, city_id, day, min_t, max_t, wind_speed, precipitation, is_measured=0) -> None:
+    def write_to_weather_data(
+            self,
+            city_id: int,
+            day: str,
+            min_t: float,
+            max_t: float,
+            wind_speed: float,
+            precipitation: float,
+            is_measured: int = 0
+    ) -> None:
+        """
+        Record weather data.
+
+        Param city_id: ID of place
+        Param day: date.
+        Param min_t: minimum temperature for the date.
+        Param max_t: maximum temperature for the date.
+        Param wind_speed: wind speed.
+        Param precipitation: precipitation sum.
+        Param is_measured: bool, True if data is measured, and False if it is forecasted.
+        Return: None.
+        """
         try:
             self.cursor.execute(
                 """INSERT INTO weather_data (place_id, date, min_temp, max_temp, max_wind_speed, 
@@ -86,4 +117,4 @@ class DatabaseManager(object):
                 (city_id, day, min_t, max_t, wind_speed, precipitation, is_measured)
             )
         except IntegrityError as exc:
-            print(f"Data for {day} already exists.")
+            mprint(f"Data for {day} already exists.")

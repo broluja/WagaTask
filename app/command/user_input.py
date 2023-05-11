@@ -2,7 +2,7 @@ import requests
 from requests.exceptions import ConnectionError
 import datetime
 
-from exceptions import UserInputException, UnsuccessfulConnectionError
+from exceptions import UserInputException, UnsuccessfulConnectionError, InvalidEndDateException
 from validators import validate_start_date, validate_end_date
 from config import settings as sttg
 
@@ -25,7 +25,7 @@ def mprint(*args, delimiter="-", end="\n", sep="\n") -> None:
         print(delimiter * 80, *args, delimiter * 80, sep=sep, end=end)
 
 
-def print_available_cities(message, results: dict) -> None:
+def print_available_cities(message: str, results: dict) -> None:
     """
     Prompt user for correct option.
 
@@ -43,6 +43,7 @@ def get_city() -> dict | bool:
 
     Return: a places object or False if User decides to quit.
     """
+    mprint("Weather Forecast API")
     cities = input("Enter place: ")
     endpoint = CITY_LAT_AND_LONG + "%20".join(cities.strip().split())
     try:
@@ -52,11 +53,13 @@ def get_city() -> dict | bool:
     results = response.json().get("results", None)
     if results:
         print_available_cities("Select place from options below:", results)
+        mprint()
         city = input("Enter option or b for choosing different places: ")
         if city.lower().strip() == "b":
             return get_city()
         while city.strip() not in (str(i) for i in range(1, len(results) + 1)):
             print_available_cities("Invalid option. Available options are:", results)
+            mprint()
             city = input("Enter option or b for choosing different places: ")
             if city.lower().strip() == "b":
                 return get_city()
@@ -72,15 +75,15 @@ def get_start_date() -> str | bool:
 
     Return: validated date string or False if User decides to quit.
     """
-    date = input("Enter START date or 'q' for exit: ")
-    if date.lower().strip() == 'q':
+    user_date = input("Enter START date (YYYY-MM-DD) or 'q' for exit: ")
+    if user_date.lower().strip() == 'q':
         return False
     try:
-        validate_start_date(date)
+        validate_start_date(user_date)
     except UserInputException as exc:
         mprint(str(exc))
         return get_start_date()
-    return date
+    return user_date
 
 
 def get_end_date(start_date: str) -> str | bool:
@@ -89,24 +92,27 @@ def get_end_date(start_date: str) -> str | bool:
 
     Return: validated date string or False if User decides to quit.
         """
-    date = input("Enter END date or 'q' for exit: ")
-    if date.lower().strip() == 'q':
+    user_date = input("Enter END date (YYYY-MM-DD) or 'q' for exit: ")
+    if user_date.lower().strip() == 'q':
         return False
     try:
-        validate_end_date(start_date, date)
+        validate_end_date(start_date, user_date)
     except UserInputException as exc:
         mprint(str(exc))
         return get_end_date(start_date)
-    return date
+    return user_date
 
 
-def get_days(start, end):
+def get_days(start: str, end: str) -> list:
     """
     Get all the days between start and end date.
 
     Return: list of date objects.
     """
-    start_date = datetime.date.fromisoformat(start)
-    end_date = datetime.date.fromisoformat(end)
-    delta = end_date - start_date
-    return [start_date + datetime.timedelta(days=i) for i in range(delta.days + 1)]
+    try:
+        start_date = datetime.date.fromisoformat(start)
+        end_date = datetime.date.fromisoformat(end)
+        delta = end_date - start_date
+        return [start_date + datetime.timedelta(days=i) for i in range(delta.days + 1)]
+    except ValueError as exc:
+        raise InvalidEndDateException from exc

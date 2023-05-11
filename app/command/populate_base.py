@@ -3,7 +3,8 @@ from exceptions import UserInputException
 from weather_manager import weather_manager
 
 
-def main():
+def main() -> None:
+    """Main function."""
     try:
         city_object = get_city()
         if not city_object:
