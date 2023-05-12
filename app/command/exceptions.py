@@ -3,7 +3,7 @@
 
 class UserInputException(Exception):
     """Base exception class."""
-    message_to_user = "Something went wrong. Please try again later."
+    message_to_user = "Something went wrong."
 
     def __init__(self, *args):
         if args:

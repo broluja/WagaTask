@@ -19,17 +19,23 @@ class WeatherDataRepository(BaseCRUDRepository):
 
     def read_data_by_place_id_and_date(self, place_id, date):
         try:
-            data = self.db.query(WeatherData).filter(WeatherData.place_id == place_id).filter(
-                WeatherData.date == date).all()
-            return data
+            return (
+                self.db.query(WeatherData)
+                .filter(WeatherData.place_id == place_id)
+                .filter(WeatherData.date == date)
+                .all()
+            )
         except Exception as exc:
             self.db.rollback()
             raise exc
 
     def read_all_dates_for_place(self, place_id):
         try:
-            dates = self.db.query(WeatherData.date).filter(WeatherData.place_id == place_id).all()
-            return dates
+            return (
+                self.db.query(WeatherData.date)
+                .filter(WeatherData.place_id == place_id)
+                .all()
+            )
         except Exception as exc:
             self.db.rollback()
             raise exc

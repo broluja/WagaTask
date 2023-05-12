@@ -1,10 +1,14 @@
 """Configuration module"""
+
 from pydantic import BaseSettings
+import platform
 import os
 
-
 os.chdir("../..")
-env_file = os.getcwd() + '\\.env'
+if platform.system() == "Windows":
+    env = os.getcwd() + '\\.env'
+else:
+    env = f'{os.getcwd()}/.env'
 
 
 class Settings(BaseSettings):
@@ -23,7 +27,7 @@ class Settings(BaseSettings):
 
     class Config:
         """Configuration Class"""
-        env_file = env_file
+        env_file = env
 
 
 settings = Settings()
