@@ -1,9 +1,9 @@
 """Base Repository class with CRUD operations, which is inherited by every other repository Model."""
 from typing import Union, Type, TypeVar, Generic
 from fastapi.encoders import jsonable_encoder
+from sqlalchemy.orm import Session
 
 from app.base.base_exception import BaseAPPException
-from app.db import SessionLocal
 
 Model = TypeVar("Model")
 
@@ -11,7 +11,7 @@ Model = TypeVar("Model")
 class BaseCRUDRepository(Generic[Model]):
     """Base Class for CRUD operations. Class will be inherited by all Model Repositories."""
 
-    def __init__(self, db: SessionLocal, model: Type[Model]):
+    def __init__(self, db: Session, model: Type[Model]):
         self.db = db
         self.model = model
 

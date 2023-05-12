@@ -11,8 +11,8 @@ class Place(Base):
     __table_args__ = (UniqueConstraint("name", "country", "admin1", "admin2", name="place_constraint"),)
 
     id = Column(Integer(), primary_key=True)
-    name = Column(String(100))
-    country = Column(String(100))
+    name = Column(String(100), nullable=False)
+    country = Column(String(100), nullable=False)
     admin1 = Column(String(100))
     admin2 = Column(String(100))
 

@@ -132,3 +132,4 @@ dmypy.json
 .idea
 
 weather_data.db
+weather_data_test.db
