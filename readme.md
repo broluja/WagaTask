@@ -15,7 +15,7 @@ Compare differences between measured and forecasted data, if exists.
 # Technologies
 Technologies used on this project:
 + Python 3.10
-+ SQLAlchemy
++ SQLAlchemy 1.4.46
 + FastAPI
 + Uvicorn
 + requests library
@@ -31,27 +31,27 @@ Technologies used on this project:
 venv ./venv
 ```
 #### Windows
-Open Command Prompt or PowerShell, navigate to project folder and run
+Open Command Prompt or PowerShell, navigate to project folder and run:
 ```bash
 python -m venv ./venv
 ```
 #### Linux/MacOS
-Open terminal, navigate to project directory and run
+Open terminal, navigate to project directory and run:
 ```bash
 python -m venv ./venv
 ```
-If that previous command didn't work, install virtualenv
+If that previous command didn't work, install virtualenv:
 ```bash
 pip install virtualenv
 ```
-Run command in project directory to create virtual env
+Run command in project directory to create a virtual env:
 ```bash
 virtualenv venv
 ```
 
 
 ### Activate Virtual environment
-Open terminal and navigate to project directory, than run
+Open terminal and navigate to project directory, then run:
 
 | Platform | Shell      | Command to activate virtual environment |
 |----------|------------|-----------------------------------------|
@@ -72,8 +72,8 @@ pip install -r requirements.txt
 
 ### Environment variables
 1. Create a new file **_.env_**
-2. Copy all consts from **env-template** to **_.env_**
-3. Assign values to const in .env file
+2. Copy all constants from **env-template** to **_.env_**
+3. Assign values to constants in .env file
 
 
 ### Database
