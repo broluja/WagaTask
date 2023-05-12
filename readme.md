@@ -8,7 +8,7 @@
 
 
 # Introduction
-Read weather data from desired City (forecasted and measured)
+Read weather data for desired City (forecasted and measured)
 Compare differences between measured and forecasted data, if exists.
 
 
