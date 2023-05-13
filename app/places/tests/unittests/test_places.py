@@ -18,11 +18,13 @@ class TestPlaceRepo(TestClass):
         """
         with TestingSessionLocal() as db:
             repository = PlaceRepository(db, Place)
-            obj = repository.create({
-                "name": "Belgrade",
-                "country": "Serbia",
-                "admin1": "Belgrade",
-                "admin2": "Belgrade"}
+            obj = repository.create(
+                {
+                    "name": "Belgrade",
+                    "country": "Serbia",
+                    "admin1": "Belgrade",
+                    "admin2": "Belgrade"
+                }
             )
         assert obj.name == "Belgrade"
         assert obj.country == "Serbia"
@@ -38,21 +40,25 @@ class TestPlaceRepo(TestClass):
         with pytest.raises(Exception):
             with TestingSessionLocal() as db:
                 repository = PlaceRepository(db, Place)
-                repository.create({
-                    "name": None,
-                    "country": None,
-                    "admin1": "Belgrade",
-                    "admin2": "Belgrade"}
+                repository.create(
+                    {
+                        "name": None,
+                        "country": None,
+                        "admin1": "Belgrade",
+                        "admin2": "Belgrade"
+                    }
                 )
 
     def test_read_place_by_id(self):
         with TestingSessionLocal() as db:
             repository = PlaceRepository(db, Place)
-            obj = repository.create({
-                "name": "Belgrade",
-                "country": "Serbia",
-                "admin1": "Belgrade",
-                "admin2": "Belgrade"}
+            obj = repository.create(
+                {
+                    "name": "Belgrade",
+                    "country": "Serbia",
+                    "admin1": "Belgrade",
+                    "admin2": "Belgrade"
+                }
             )
             place = repository.read_by_id(obj.id)
         assert place.name == "Belgrade"
@@ -71,3 +77,28 @@ class TestPlaceRepo(TestClass):
                     "admin2": "Belgrade"}
                 )
                 repository.read_by_id(3)
+
+    def test_read_place_by_name(self):
+        with TestingSessionLocal() as db:
+            repository = PlaceRepository(db, Place)
+            repository.create({
+                "name": "Belgrade",
+                "country": "Serbia",
+                "admin1": "Belgrade",
+                "admin2": "Belgrade"}
+            )
+            places = repository.read_place_by_name("Belgrade")
+        assert places[0].name == "Belgrade"
+        assert places[0].country == "Serbia"
+
+    def test_read_place_by_name_fail(self):
+        with TestingSessionLocal() as db:
+            repository = PlaceRepository(db, Place)
+            repository.create({
+                "name": "Belgrade",
+                "country": "Serbia",
+                "admin1": "Belgrade",
+                "admin2": "Belgrade"}
+            )
+            places = repository.read_place_by_name("Novi Sad")
+        assert len(places) == 0
