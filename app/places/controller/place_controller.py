@@ -8,7 +8,7 @@ from app.places.service import PlaceServices
 class PlaceController:
     """Controller for Place routes"""
     @staticmethod
-    def get_place_data_differences(place):
+    def get_place_data_differences(place: str):
         try:
             return PlaceServices.get_place_data_differences(place)
         except BaseAPPException as exc:

@@ -15,19 +15,20 @@ from app.weather_data.schemas import WeatherDataDifferencesSchema
 class PlaceServices:
     """Service for User routes."""
     @staticmethod
-    def get_place_data_differences(name):
+    def get_place_data_differences(name: str):
         try:
             with SessionLocal() as db:
                 place_repository = PlaceRepository(db, Place)
-                places = place_repository.read_place_by_name(name)
+                places = place_repository.read_place_by_name(name)  # Get all places for given name.
                 weather_data_repository = WeatherDataRepository(db, WeatherData)
                 schemas_to_return = []
                 for place in places:
-                    dates = weather_data_repository.read_all_dates_for_place(place_id=place.id)
-                    flatten_list = list(chain(*dates))
-                    date_count = Counter(flatten_list)
+                    dates = weather_data_repository.read_all_dates_for_place(place_id=place.id)  # Get data for place.
+                    print(dates)
+                    flatten_list = list(chain(*dates))  # Flatten the list
+                    date_count = Counter(flatten_list)  # Count the number of single date appearance.
                     for date in date_count:
-                        if date_count[date] == 2:
+                        if date_count[date] == 2:  # If there is two dates, then date has measured and forecasted data.
                             objects = weather_data_repository.read_data_by_place_id_and_date(place.id, date)
                             min_temp, max_temp, wind_speed, precipitation = get_data_differences(objects[0], objects[1])
                             schema = WeatherDataDifferencesSchema(
